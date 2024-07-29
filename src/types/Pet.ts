@@ -1,7 +1,7 @@
 export default interface Pet {
     id:number;
-    nome:string;
-    especie:string;
-    idade:number;
-    adotado:boolean
+    name:string;
+    specie:string;
+    age:number;
+    adopted:boolean
 }
