@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
 import Pet from "../types/Pet";
 import EnumSpecie from "../enum/EnumSpecie";
+import PetRepository from "../repositories/PetRepository";
+import PetEntity from "../entities/PetEntity";
 
 let petList: Array<Pet> = [];
 
 export default class PetController {
+
+    constructor(private repository:PetRepository) {}
 
     private static petId: number = 0;
 
@@ -12,7 +16,8 @@ export default class PetController {
         this.petId += 1;
     }
 
-    public getPetList(req:Request, res:Response) {
+    public async getPetList(req:Request, res:Response) {
+        const petList = await this.repository.getPetList();
         return res.status(200).json(petList)
     }
 
@@ -21,7 +26,7 @@ export default class PetController {
             adopted, 
             specie, 
             bornDate, 
-            name} = <Pet>req.body;
+            name} = <PetEntity>req.body;
         
         if (!Object.values(EnumSpecie).includes(specie)) {
             return res.status(400).json({erro: "Espécie inválida"});
@@ -29,8 +34,14 @@ export default class PetController {
 
         PetController.idIncrement();
 
-        const newPet = {id: PetController.petId, adopted, specie, bornDate, name}
-        petList.push(newPet);
+        const newPet = new PetEntity();
+        newPet.id = PetController.petId;
+        newPet.specie = specie;
+        newPet.adopted =  adopted;
+        newPet.bornDate = bornDate;
+        newPet.name = name;
+
+        this.repository.createPet(newPet);
         return res.status(201).json(newPet);
     }
 
@@ -53,7 +64,7 @@ export default class PetController {
         const { id } = req.params;
         const pet = petList.find((pet) => Number(pet.id) === Number(id)); 
         if (!pet) {
-            return res.status (404).json({ erro: "Pet não encontrado" }); 
+            return res.status(404).json({ erro: "Pet não encontrado" }); 
         }
         const index = petList.indexOf(pet);
         petList.splice (index, 1);

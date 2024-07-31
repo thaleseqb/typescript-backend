@@ -10,7 +10,7 @@ export default class PetEntity {
     @Column()
     specie: EnumSpecie;
     @Column()
-    bornData: Date;
+    bornDate: Date;
     @Column()
     adopted:boolean;
 }
