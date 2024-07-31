@@ -7,21 +7,29 @@ import PetEntity from "../entities/PetEntity";
 let petList: Array<Pet> = [];
 
 export default class PetController {
+    
+    private petId: number;
 
-    constructor(private repository:PetRepository) {}
+    constructor(private repository:PetRepository, petId: number) {
+        this.petId = petId;
+    }
 
-    private static petId: number = 0;
+    private async getListLength(): Promise<number> {
+        const petList = await this.repository.getPetList();
+        return petList.length;
+    } 
 
-    private static idIncrement(): void {
-        this.petId += 1;
+    private async idDefiner(): Promise<void> {
+        this.petId = await this.getListLength() + 1 ;
     }
 
     public async getPetList(req:Request, res:Response) {
+        this.getListLength();
         const petList = await this.repository.getPetList();
         return res.status(200).json(petList)
     }
 
-    public createPet(req:Request, res: Response) {
+    public async createPet(req:Request, res: Response) {
         const { 
             adopted, 
             specie, 
@@ -32,16 +40,11 @@ export default class PetController {
             return res.status(400).json({erro: "Espécie inválida"});
         }
 
-        PetController.idIncrement();
+        this.idDefiner();
 
-        const newPet = new PetEntity();
-        newPet.id = PetController.petId;
-        newPet.specie = specie;
-        newPet.adopted =  adopted;
-        newPet.bornDate = bornDate;
-        newPet.name = name;
+        const newPet = new PetEntity(name, specie, bornDate, adopted);
 
-        this.repository.createPet(newPet);
+        await this.repository.createPet(newPet);
         return res.status(201).json(newPet);
     }
 

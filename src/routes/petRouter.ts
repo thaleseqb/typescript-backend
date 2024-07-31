@@ -7,7 +7,7 @@ const router = express.Router();
 
 const petRepos = new PetRepository(AppDataSource.getRepository("PetEntity"));
 
-const petController = new PetController(petRepos);
+const petController = new PetController(petRepos, 0);
 
 router.get("/", (req,res)=>petController.getPetList(req,res))
 router.post("/", (req,res)=>petController.createPet(req,res));
