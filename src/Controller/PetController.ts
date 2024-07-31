@@ -45,29 +45,27 @@ export default class PetController {
         return res.status(201).json(newPet);
     }
 
-    public updatePet (req: Request, res: Response) {
+    public async updatePet (req: Request, res: Response) {
         const { id } = req.params;
-        const { adopted, specie, bornDate, name} = <Pet>req.body ;
-        const pet = petList.find((pet) => Number(pet.id) === Number(id));
-        if (!pet) { 
-            return res.status (404).json({ erro: "Pet não encontrado" });
+        const { success, message } = await this.repository.updatePet(
+          Number(id),
+          <PetEntity>req.body
+        );
+      
+        if (!success) {
+          return res.status(404).json({ message });
         }
-        
-        pet.name = name;
-        pet.bornDate = bornDate;
-        pet.specie = specie;
-        pet.adopted = adopted;
-        return res.status(200).json(pet);
+        return res.sendStatus(204);
     }
 
-    public deletePet (req: Request, res: Response) {
+    public async deletePet (req: Request, res: Response) {
         const { id } = req.params;
-        const pet = petList.find((pet) => Number(pet.id) === Number(id)); 
-        if (!pet) {
-            return res.status(404).json({ erro: "Pet não encontrado" }); 
+
+        const { success, message } = await this.repository.deletePet(Number(id));
+      
+        if (!success) {
+          return res.status(404).json({ message });
         }
-        const index = petList.indexOf(pet);
-        petList.splice (index, 1);
-        return res.status(200).json({ mensagem: "Pet deletado com sucesso" });
+        return res.sendStatus(204);
     }
 }
