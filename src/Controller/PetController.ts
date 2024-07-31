@@ -7,10 +7,10 @@ import PetEntity from "../entities/PetEntity";
 let petList: Array<Pet> = [];
 
 export default class PetController {
-    
+
     private petId: number;
 
-    constructor(private repository:PetRepository, petId: number) {
+    constructor(private repository:PetRepository, petId:number) {
         this.petId = petId;
     }
 
@@ -21,6 +21,21 @@ export default class PetController {
 
     private async idDefiner(): Promise<void> {
         this.petId = await this.getListLength() + 1 ;
+    }
+
+    private deleteId(): void {
+        if (this.petId === 0) {
+            return;
+        }
+        this.petId -= 1;
+    }
+
+    private createNewPet(name:string, specie:EnumSpecie, bornDate:Date, adopted:boolean): PetEntity {
+        const newPet = new PetEntity(name, specie, bornDate, adopted);
+        this.idDefiner();
+        newPet.id = this.petId;
+
+        return newPet;
     }
 
     public async getPetList(req:Request, res:Response) {
@@ -42,7 +57,7 @@ export default class PetController {
 
         this.idDefiner();
 
-        const newPet = new PetEntity(name, specie, bornDate, adopted);
+        const newPet = this.createNewPet(name, specie, bornDate, adopted);
 
         await this.repository.createPet(newPet);
         return res.status(201).json(newPet);
@@ -69,6 +84,7 @@ export default class PetController {
         if (!success) {
           return res.status(404).json({ message });
         }
+        this.deleteId();
         return res.sendStatus(204);
     }
 }
