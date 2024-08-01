@@ -2,13 +2,19 @@ import { Repository } from "typeorm";
 import PetEntity from "../entities/PetEntity";
 import Pet from "../types/Pet";
 import InterfacePetRepos from "./interfaces/InterfacePetRepos";
+import AdoptantEntity from "../entities/AdoptantEntity";
 
 export default class PetRepository implements InterfacePetRepos {
     
     private repository: Repository<PetEntity>;
+    private adoptantRepository: Repository<AdoptantEntity>;
 
-    constructor(repository: Repository<PetEntity>) {
+    constructor(
+        repository: Repository<PetEntity>, 
+        adoptantRepository: Repository<AdoptantEntity>
+    ) {
         this.repository = repository;
+        this.adoptantRepository = adoptantRepository;
     }
 
     public createPet(pet: PetEntity): void {
@@ -46,7 +52,7 @@ export default class PetRepository implements InterfacePetRepos {
         }
     }
 
-    async deletePet(id: number): Promise<{success:boolean; message?: string}> {
+    public async deletePet(id: number): Promise<{success:boolean; message?: string}> {
         
         try {
             const petToRemove = await this.repository.findOne({ where : {id} });
@@ -68,4 +74,32 @@ export default class PetRepository implements InterfacePetRepos {
         }
     }
 
+    public async petAdoption(
+        idPet: number, 
+        idAdoptant: number
+    ): Promise<{ success: boolean; message?: string; }> {
+        try {
+
+            const pet = await this.repository.findOne({ where : {id: idPet} });
+            if (!pet) {
+                return {success: false,message: "pet não encontrado"}
+            }
+
+            const adoptant = await this.adoptantRepository.findOne({ where : {id: idAdoptant} });
+            if (!adoptant) {
+                return {success: false,message: "adotante não encontrado"}
+            }
+
+            pet.adoptant = adoptant;
+            pet.adopted = true;
+            await this.repository.save(pet);
+
+            return {success:true};
+        } catch (error) {
+            return {
+                success:false,
+                message: `Ocorreu o seguinte erro no processo de adoção: ${error}`
+            }
+        }
+    }
 }

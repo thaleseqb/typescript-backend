@@ -9,4 +9,8 @@ export default interface InterfacePetRepos {
         pet:PetEntity
     ): Promise<{success:boolean; message?: string}> | void;
     deletePet(id:number): Promise<{success:boolean; message?: string}> | void;
+    petAdoption(
+        idPet:number, 
+        idAdoptant:number
+    ): Promise<{success:boolean; message?:string}> | void;
 }
