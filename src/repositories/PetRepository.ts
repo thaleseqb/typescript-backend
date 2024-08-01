@@ -19,7 +19,7 @@ export default class PetRepository implements InterfacePetRepos {
         return await this.repository.find();
     }
 
-    async updatePet(
+    public async updatePet(
         id: number,
         newPet: PetEntity
     ): Promise<{ success: boolean; message?: string }> {

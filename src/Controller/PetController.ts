@@ -39,7 +39,6 @@ export default class PetController {
     }
 
     public async getPetList(req:Request, res:Response) {
-        this.getListLength();
         const petList = await this.repository.getPetList();
         return res.status(200).json(petList)
     }
