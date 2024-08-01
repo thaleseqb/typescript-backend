@@ -1,3 +1,4 @@
+import AddressEntity from "../../entities/Address";
 import AdoptantEntity from "../../entities/AdoptantEntity";
 
 export default interface InterfaceAdoptantRepository {
@@ -8,4 +9,8 @@ export default interface InterfaceAdoptantRepository {
         adoptant: AdoptantEntity
     ): Promise<{success:boolean; message?:string} | void >;
     deleteAdoptant(id:number): Promise<{success:boolean; message?: string}> | void;
+    updateAdoptantAddress(
+        id:number, 
+        address: AddressEntity
+    ): Promise<{success:boolean; message?: string}> | void;
 }

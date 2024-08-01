@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import AdoptantEntity from "../entities/AdoptantEntity";
 import AdoptantRepository from "../repositories/AdoptantRepository";
+import AddressEntity from "../entities/Address";
 
 export default class AdotanteController {
     constructor(private repository: AdoptantRepository) {}
@@ -52,5 +53,20 @@ export default class AdotanteController {
 
         return res.sendStatus(204);
     }
+
+    public async updateAdoptantAddress(req:Request, res: Response) {
+        const { id } = req.params;
+        const { success, message } = await this.repository.updateAdoptantAddress(
+            Number(id),
+            <AddressEntity>req.body
+        );
+
+        if (!success) {
+            return res.status(404).json({ message });
+        }
+
+        return res.sendStatus(204);
+    }
+    
     
 }

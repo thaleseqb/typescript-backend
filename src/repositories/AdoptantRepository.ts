@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
 import AdoptantEntity from "../entities/AdoptantEntity";
 import InterfaceAdoptantRepository from "./interfaces/InterfaceAdoptantRepos";
+import AddressEntity from "../entities/Address";
 
 export default class AdoptantRepository implements InterfaceAdoptantRepository {
     constructor(private repository: Repository<AdoptantEntity>) {}
@@ -51,6 +52,31 @@ export default class AdoptantRepository implements InterfaceAdoptantRepository {
                 success: false,
                 message: "falha ao excluir adotante"
             };
+        }
+    }
+
+    public async updateAdoptantAddress(
+        id: number, 
+        address: AddressEntity
+    ): Promise<{ success: boolean; message?: string; }> {
+
+        try {
+            const adoptant = await this.repository.findOne({ where : { id } });
+
+            if (!adoptant) {
+                return {success: false, message: "adotante não encontrado"}
+            }
+
+            const newAddress = new AddressEntity(address.city, address.state);
+            adoptant.address = newAddress;
+            await this.repository.save(adoptant);
+
+            return {success:true}
+        } catch (error) {
+            return {
+                success: false,
+                message: `O seguinte erro foi capturado: ${error}`
+            }
         }
     }
 }
