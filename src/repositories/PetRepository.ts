@@ -3,6 +3,7 @@ import PetEntity from "../entities/PetEntity";
 import Pet from "../types/Pet";
 import InterfacePetRepos from "./interfaces/InterfacePetRepos";
 import AdoptantEntity from "../entities/AdoptantEntity";
+import EnumSize from "../enum/EnumSize";
 
 export default class PetRepository implements InterfacePetRepos {
     
@@ -101,5 +102,10 @@ export default class PetRepository implements InterfacePetRepos {
                 message: `Ocorreu o seguinte erro no processo de adoção: ${error}`
             }
         }
+    }
+
+    public async searchBySize(size: EnumSize): Promise<Array<PetEntity>> {
+        const pets = await this.repository.find({ where : { size } });
+        return pets;
     }
 }

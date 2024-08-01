@@ -3,6 +3,7 @@ import Pet from "../types/Pet";
 import EnumSpecie from "../enum/EnumSpecie";
 import PetRepository from "../repositories/PetRepository";
 import PetEntity from "../entities/PetEntity";
+import EnumSize from "../enum/EnumSize";
 
 let petList: Array<Pet> = [];
 
@@ -30,8 +31,8 @@ export default class PetController {
         this.petId -= 1;
     }
 
-    private createNewPet(name:string, specie:EnumSpecie, bornDate:Date, adopted:boolean): PetEntity {
-        const newPet = new PetEntity(name, specie, bornDate, adopted);
+    private createNewPet(name:string, specie:EnumSpecie, bornDate:Date, adopted:boolean, size: EnumSize): PetEntity {
+        const newPet = new PetEntity(name, specie, bornDate, adopted, size);
         this.idDefiner();
         newPet.id = this.petId;
 
@@ -48,15 +49,20 @@ export default class PetController {
             adopted, 
             specie, 
             bornDate, 
-            name} = <PetEntity>req.body;
+            name,
+            size
+        } = <PetEntity>req.body;
         
         if (!Object.values(EnumSpecie).includes(specie)) {
             return res.status(400).json({erro: "Espécie inválida"});
         }
-
+        if (size && !(size in EnumSize)) {
+            return res.status(400).json({erro: "Porte inválido"});
+        }
+        
         this.idDefiner();
 
-        const newPet = this.createNewPet(name, specie, bornDate, adopted);
+        const newPet = this.createNewPet(name, specie, bornDate, adopted, <EnumSize>size);
 
         await this.repository.createPet(newPet);
         return res.status(201).json(newPet);
@@ -99,5 +105,12 @@ export default class PetController {
         }
 
         return res.sendStatus(204);
+    }
+
+    public async searchBySize(req: Request, res: Response) {
+        const { size } = req.query;
+        const petList = await this.repository.searchBySize(<EnumSize>size);
+
+        return res.status(200).json(petList);
     }
 }

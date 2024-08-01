@@ -1,4 +1,5 @@
 import PetEntity from "../../entities/PetEntity";
+import EnumSize from "../../enum/EnumSize";
 import Pet from "../../types/Pet";
 
 export default interface InterfacePetRepos {
@@ -13,4 +14,6 @@ export default interface InterfacePetRepos {
         idPet:number, 
         idAdoptant:number
     ): Promise<{success:boolean; message?:string}> | void;
+
+    searchBySize(size: EnumSize): Promise<Array<PetEntity>> | Array<PetEntity> ;
 }
