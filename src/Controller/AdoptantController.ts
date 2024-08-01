@@ -28,7 +28,29 @@ export default class AdotanteController {
     public async updateAdoptant(req: Request, res: Response) {
         const { id } = req.params;
 
+        const {success, message} = await this.repository.updateAdoptant(
+            Number(id), 
+            <AdoptantEntity>req.body
+        );
 
+        if (!success) {
+            return res.status(404).json({ message })
+        }
+        
+        return res.sendStatus(204);
+    }
+
+    public async deleteAdoptant(req:Request, res: Response) {
+        const { id } = req.params;
+        const { success, message } = await this.repository.deleteAdoptant(
+            Number(id)
+        );
+
+        if (!success) {
+            return res.status(404).json({ message });
+        }
+
+        return res.sendStatus(204);
     }
     
 }

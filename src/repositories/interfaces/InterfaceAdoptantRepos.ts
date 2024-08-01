@@ -6,5 +6,6 @@ export default interface InterfaceAdoptantRepository {
     updateAdoptant(
         id:number,
         adoptant: AdoptantEntity
-    ): Promise<{success:boolean; message?:string} | void >
+    ): Promise<{success:boolean; message?:string} | void >;
+    deleteAdoptant(id:number): Promise<{success:boolean; message?: string}> | void;
 }

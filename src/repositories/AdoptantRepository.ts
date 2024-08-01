@@ -34,4 +34,23 @@ export default class AdoptantRepository implements InterfaceAdoptantRepository {
             };
         }
     }
+
+    public async deleteAdoptant(id: number): Promise<{ success: boolean; message?: string; }> {
+        try {
+            const toDeleteAdoptant = await this.repository.findOne({ where: { id } })
+
+            if (!toDeleteAdoptant) {
+                return {success:false, message: "adotante não encontrado"}
+            }
+
+            await this.repository.remove(toDeleteAdoptant);
+            return {success:true};
+
+        } catch (error) {
+            return {
+                success: false,
+                message: "falha ao excluir adotante"
+            };
+        }
+    }
 }

@@ -12,6 +12,6 @@ const petController = new PetController(petRepos, 0);
 router.get("/", (req,res)=>petController.getPetList(req,res))
 router.post("/", (req,res)=>petController.createPet(req,res));
 router.delete("/:id", (req,res)=>petController.deletePet(req,res));
-router.patch("/:id",(req,res)=> petController.updatePet(req,res));
+router.put("/:id",(req,res)=> petController.updatePet(req,res));
 
 export default router;
