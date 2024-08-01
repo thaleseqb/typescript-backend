@@ -14,6 +14,8 @@ export default interface InterfacePetRepos {
         idPet:number, 
         idAdoptant:number
     ): Promise<{success:boolean; message?:string}> | void;
-
-    searchBySize(size: EnumSize): Promise<Array<PetEntity>> | Array<PetEntity> ;
+    searchByGenerics<Type extends keyof PetEntity>(
+        field: Type, 
+        value: PetEntity[Type]
+    ): Promise<Array<PetEntity>> | Array<PetEntity>;
 }

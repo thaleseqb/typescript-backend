@@ -19,6 +19,6 @@ router.delete("/:id", (req,res)=>petController.deletePet(req,res));
 router.put("/:pet_id/:adoptant_id",(req,res)=> 
     petController.adoptPet(req,res)
 );
-router.get("/filtroPorte", (req,res)=>petController.searchBySize(req,res));
+router.get("/filtro", (req,res)=>petController.searchByGenerics(req,res));
 
 export default router;

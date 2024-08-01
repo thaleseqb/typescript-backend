@@ -107,9 +107,13 @@ export default class PetController {
         return res.sendStatus(204);
     }
 
-    public async searchBySize(req: Request, res: Response) {
-        const { size } = req.query;
-        const petList = await this.repository.searchBySize(<EnumSize>size);
+    public async searchByGenerics(req: Request, res: Response) {
+        const { field, value } = req.query;
+
+        const petList = await this.repository.searchByGenerics(
+            field as keyof PetEntity, 
+            value as keyof PetEntity
+        );
 
         return res.status(200).json(petList);
     }

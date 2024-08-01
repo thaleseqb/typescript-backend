@@ -104,8 +104,11 @@ export default class PetRepository implements InterfacePetRepos {
         }
     }
 
-    public async searchBySize(size: EnumSize): Promise<Array<PetEntity>> {
-        const pets = await this.repository.find({ where : { size } });
-        return pets;
+    public async searchByGenerics<Type extends keyof PetEntity>(
+        field: Type, 
+        value: PetEntity[Type]
+    ): Promise<Array<PetEntity>> {
+        const petList = await this.repository.find({ where : {[field]: value}});
+        return petList;
     }
 }
