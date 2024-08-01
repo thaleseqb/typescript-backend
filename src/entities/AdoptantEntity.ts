@@ -1,8 +1,11 @@
 import {
     Column,
     Entity,
+    JoinColumn,
+    OneToOne,
     PrimaryGeneratedColumn,
   } from "typeorm";
+import AddressEntity from "./Address";
   
 @Entity()
 export default class AdoptantEntity {
@@ -16,15 +19,16 @@ export default class AdoptantEntity {
     phone: string;
     @Column({nullable:true})
     photograph?: string;
-    @Column({nullable:true})
-    address?: string;
+    @OneToOne(() => AddressEntity, {nullable:true, cascade:true, eager:true})
+    @JoinColumn()
+    address?: AddressEntity;
 
     constructor(
         name: string,
         password: string,
         phone: string,
         photograph?: string,
-        address?: string
+        address?: AddressEntity
     ) {
         this.name = name;
         this.password = password;
